@@ -15,10 +15,10 @@ function ChatList({ id, users, loggedInUser }) {
         <>
            <Container onClick={enterChat}>
                  {
-                   recipientData ? <UserAvatar>{recipientData?.photoURL}</UserAvatar>
+                   recipientData ? <UserAvatar src={recipientData?.photoURL} />
                                  : <UserAvatar>{recipientEmail[0]}</UserAvatar>
                  }
-                 <p>{recipientEmail}</p>
+                 <p>{recipientEmail ? recipientEmail : ""}</p>
            </Container>
         </>
     )

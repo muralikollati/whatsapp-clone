@@ -90,8 +90,6 @@ export const Modal = ({ showModal, setShowModal, chatsSnapshot}) => {
   const [email, setEmail] = useState('')
   const [emailValidationMsg, setEmailValidationMsg] = useState('')
   const [ user ] = useAuthState(auth)
-  const userChatRef = db.collection('chats').where('users', 'array-contains', user.email)
-  //const [chatsSnapshot] = useCollection(userChatRef)
 
   
   useEffect(
@@ -156,7 +154,7 @@ export const Modal = ({ showModal, setShowModal, chatsSnapshot}) => {
               <h3>Please enter an email for the user you wish to chat with</h3>
               <p>{ emailValidationMsg }</p>
                 <input value={email} onChange={(e)=>{setEmail(e.target.value), setEmailValidationMsg("")}}
-                       placeholder={emailValidationMsg}/>
+                       placeholder="Enter email"/>
                 <button onClick={addEmailToDb}>Start Chat</button>
               </ModalContent>
               <CloseModalButton

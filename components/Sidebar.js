@@ -3,8 +3,6 @@ import { Avatar, IconButton, Button } from '@material-ui/core'
 import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
-import Chat from '@material-ui/icons/Chat';
-import Chats from './Chats';
 import { Modal } from './Modal';
 import { useState } from 'react';
 import { auth, db } from '../firebase';
@@ -15,7 +13,7 @@ import ChatList from './ChatList';
 function Sidebar() {
     const [showModal, setShowModal] = useState(false);
     const [ loggedInUser ] = useAuthState(auth)
-    const userChatRef = db.collection('chats').where('users', 'array-contains', loggedInUser.email)
+    const userChatRef = db.collection('chats').where('users', 'array-contains', loggedInUser?.email)
     const [chatsSnapshot] = useCollection(userChatRef)
 
   const openModal = () => {
@@ -49,7 +47,7 @@ function Sidebar() {
                    setShowModal={setShowModal} 
                    chatsSnapshot={chatsSnapshot}
                    />
-                   
+
             {
             chatsSnapshot?.docs.map(chat =>(
                       <ChatList key={chat.id} 
