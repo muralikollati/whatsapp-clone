@@ -9,7 +9,7 @@ import firebase from 'firebase'
 
 function MyApp({ Component, pageProps }) {
  const [user, loading] = useAuthState(auth)
-
+ //console.log(auth.currentUser)
  useEffect(() => {
    if(user){
      db.collection('users').doc(user.uid).set(
@@ -28,3 +28,14 @@ if(loading) return <Loading />
 }
 
 export default MyApp
+
+// export async function getServerSideProps(){
+    
+//   const {email} = await auth.currentUser
+//   console.log("email::" , email);
+// return{
+//   props:{
+//     user: email
+//   }
+// }
+// }

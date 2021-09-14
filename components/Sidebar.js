@@ -7,8 +7,16 @@ import Chat from '@material-ui/icons/Chat';
 import Chats from './Chats';
 import { Modal } from './Modal';
 import { useState } from 'react';
+import { auth, db } from '../firebase';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import ChatList from './ChatList';
+
 function Sidebar() {
     const [showModal, setShowModal] = useState(false);
+    const [ loggedInUser ] = useAuthState(auth)
+    const userChatRef = db.collection('chats').where('users', 'array-contains', loggedInUser.email)
+    const [chatsSnapshot] = useCollection(userChatRef)
 
   const openModal = () => {
     setShowModal(prev => !prev);
@@ -16,7 +24,8 @@ function Sidebar() {
     return (
         <Container>
             <Header>
-              <UserAvatar />
+              <UserAvatar src={loggedInUser.photoURL} 
+              onClick={()=> auth.signOut()}/>
                 <IconContainer>
                     <Icon_Button>
                         <Chat_Icon />
@@ -36,7 +45,20 @@ function Sidebar() {
             {/* <Chats /> */}
             
 
-            <Modal showModal={showModal} setShowModal={setShowModal} />
+            <Modal showModal={showModal} 
+                   setShowModal={setShowModal} 
+                   chatsSnapshot={chatsSnapshot}
+                   />
+                   
+            {
+            chatsSnapshot?.docs.map(chat =>(
+                      <ChatList key={chat.id} 
+                                id={chat.id}
+                                users={chat.data().users}
+                                loggedInUser={loggedInUser}
+                                />
+                   ))
+            }
         </Container> 
     )
 } 

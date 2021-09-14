@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import CloseIcon from '@material-ui/icons/Close';
 import { useState } from 'react';
 import * as EmailValidator from 'email-validator'
+import { auth, db } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 const Background = styled.div`
   width: 100%;
@@ -60,7 +63,7 @@ const ModalContent = styled.div`
     padding: 10px 20px;
   }
   button {
-    margin: 10px;
+    margin: 20px;
     padding: 10px 50px;
     background: #141414;
     color: #fff;
@@ -82,10 +85,15 @@ const CloseModalButton = styled(CloseIcon)`
 
 
 
-export const Modal = ({ showModal, setShowModal }) => {
+export const Modal = ({ showModal, setShowModal, chatsSnapshot}) => {
   const modalRef = useRef();
   const [email, setEmail] = useState('')
-  const [emailValidationMsg, setEmailValidationMsg] = useState(' ')
+  const [emailValidationMsg, setEmailValidationMsg] = useState('')
+  const [ user ] = useAuthState(auth)
+  const userChatRef = db.collection('chats').where('users', 'array-contains', user.email)
+  //const [chatsSnapshot] = useCollection(userChatRef)
+
+  
   useEffect(
     () => {
       document.addEventListener('keydown', keyPress);
@@ -103,7 +111,6 @@ export const Modal = ({ showModal, setShowModal }) => {
   });
 
   const closeModal = e => {
-    console.log(modalRef.current,  e.target);
     if (modalRef.current === e.target) {
       setShowModal(false);
     }
@@ -120,14 +127,23 @@ export const Modal = ({ showModal, setShowModal }) => {
   );
  
   const addEmailToDb = () =>{
-    if(!email) return setEmailValidationMsg("plz enter email")
-    if(EmailValidator.validate(email)) { 
-      console.log('em', email);
-    }
-    setEmailValidationMsg("plz enter valid email")
-
+    if(!email) return setEmailValidationMsg("please enter email")
+    if(chatAlreadyExists(email)) return setEmailValidationMsg("chat already exists");
+    if(email === user.email) return setEmailValidationMsg("can't create chat with your email")
+    if(!EmailValidator.validate(email)) return setEmailValidationMsg("plz enter valid email")
+      
+       db.collection('chats').add({
+         users: [ user.email, email ],
+       })
+       setEmail("")
+       setShowModal(prev => !prev) 
   }
   
+  const chatAlreadyExists =(recipientEmail)=>
+     !!chatsSnapshot?.docs.find(
+         (chat) => chat.data().users.find(user => user === recipientEmail)?.length > 0
+     );
+ 
 
   return (
     <>
@@ -141,7 +157,7 @@ export const Modal = ({ showModal, setShowModal }) => {
               <p>{ emailValidationMsg }</p>
                 <input value={email} onChange={(e)=>{setEmail(e.target.value), setEmailValidationMsg("")}}
                        placeholder={emailValidationMsg}/>
-                <button onClick={addEmailToDb}>Join Now</button>
+                <button onClick={addEmailToDb}>Start Chat</button>
               </ModalContent>
               <CloseModalButton
                 aria-label='Close modal'
