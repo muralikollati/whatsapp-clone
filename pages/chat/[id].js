@@ -9,7 +9,6 @@ import useRecipientData from "../../hooks/useRecipientData";
 function Chat({chat, messages}) {
     const [user] = useAuthState(auth)
     const {recipientEmail, recipientData} = useRecipientData(chat.users, user)
-    console.log(recipientEmail, recipientData )
     return (
         <Container>
             <Head>
@@ -33,7 +32,7 @@ export async function getServerSideProps(context) {
                            .collection('messages')
                            .orderBy('timestamp','asc')
                            .get()
-    const messages = await massagesRef.docs.map(doc =>({
+    const messages =  massagesRef.docs.map(doc =>({
                                 id: doc.id,
                                 ...doc.data()
                            })).map(messages => ({
@@ -45,7 +44,6 @@ export async function getServerSideProps(context) {
         id: chatRef.id,
         ...chatRef.data()
     }
-    console.log(chat);
     return{
         props:{
             messages: JSON.stringify(messages),
@@ -60,7 +58,7 @@ display: flex;
 const ChatContainer = styled.div`
 flex: 1;
 overflow: scroll;
-/* height: 100vh; */
+height: 100vh;
 
 ::-webkit-scrollbar{
     display: none;

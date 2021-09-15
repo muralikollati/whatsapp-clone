@@ -6,7 +6,6 @@ import { useState } from 'react';
 import * as EmailValidator from 'email-validator'
 import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollection } from 'react-firebase-hooks/firestore';
 
 const Background = styled.div`
   width: 100%;
@@ -16,6 +15,7 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 `;
 
 const ModalWrapper = styled.div`
@@ -47,6 +47,7 @@ const ModalContent = styled.div`
   line-height: 1.8;
   color: #141414;
   margin-top: 40px;
+  z-index: 11;
  
   p{
     position: absolute;
@@ -80,7 +81,7 @@ const CloseModalButton = styled(CloseIcon)`
   width: 32px;
   height: 32px;
   padding: 0;
-  z-index: 10;
+  z-index: 20;
 `;
 
 

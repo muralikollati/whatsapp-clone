@@ -40,6 +40,8 @@ npm install @material-ui/core
 npm install firebase
 nmp install react-firebase-hooks
 npm install better-react-spinkit
+npm install react-spring
+npm i timeago-react
 
 
 

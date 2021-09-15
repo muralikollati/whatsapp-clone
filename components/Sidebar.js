@@ -21,6 +21,10 @@ function Sidebar() {
   };
     return (
         <Container>
+            <Modal showModal={showModal} 
+                   setShowModal={setShowModal} 
+                   chatsSnapshot={chatsSnapshot}
+                   />
             <Header>
               <UserAvatar src={loggedInUser.photoURL} 
               onClick={()=> auth.signOut()}/>
@@ -43,10 +47,7 @@ function Sidebar() {
             {/* <Chats /> */}
             
 
-            <Modal showModal={showModal} 
-                   setShowModal={setShowModal} 
-                   chatsSnapshot={chatsSnapshot}
-                   />
+            
 
             {
             chatsSnapshot?.docs.map(chat =>(
@@ -63,8 +64,21 @@ function Sidebar() {
 export default Sidebar
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
+  justify-content: unset;
+  flex: 0.45;
+  overflow-y: scroll;
+  height: 100vh;
+  border-right: 1px solid #11458a;
+  min-width: 300px;
+  max-width: 350px;
+
+  ::-webkit-scrollbar{
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
 `;
 
 
@@ -74,7 +88,7 @@ const Header = styled.div`
     display: flex;
     position: sticky;
     top:0;
-    /* z-index:1; */
+    z-index:1;
     justify-content:space-between;
     align-items: center;
     height: 80px;
@@ -144,6 +158,7 @@ const ChatButton = styled(Button)`
         }
     }
     `;
+
 
 
 

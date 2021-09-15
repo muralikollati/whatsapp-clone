@@ -29,13 +29,3 @@ if(loading) return <Loading />
 
 export default MyApp
 
-// export async function getServerSideProps(){
-    
-//   const {email} = await auth.currentUser
-//   console.log("email::" , email);
-// return{
-//   props:{
-//     user: email
-//   }
-// }
-// }
