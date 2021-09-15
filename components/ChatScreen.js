@@ -38,8 +38,14 @@ function ChatScreen({recipientData, recipientEmail, messages}) {
                              }}
                             /> 
             ))
+        }else{
+            return JSON.parse(messages).map(message =>(
+                <Message key={message.id}
+                         user={message}
+                         message = {message}
+                         />
+            ))
         }
-        
     }
     const sendMessage = (e) => {
        e.preventDefault();
