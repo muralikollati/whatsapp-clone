@@ -5,10 +5,22 @@ import ChatScreen from "../../components/ChatScreen";
 import Sidebar from "../../components/Sidebar";
 import { auth, db } from "../../firebase";
 import useRecipientData from "../../hooks/useRecipientData";
+import Login from '../login'
+import { useRouter } from 'next/router';
+import { useEffect } from "react";
 
 function Chat({chat, messages}) {
+    const router = useRouter()
     const [user] = useAuthState(auth)
-    const {recipientEmail, recipientData} = useRecipientData(chat.users, user)
+
+    useEffect(()=>{
+    if(!user) return <Login />
+    if(!chat.users.includes(user.email)){
+        router.replace('/')
+    }
+   },[user,chat,router])
+    
+    const {recipientEmail, recipientData} = useRecipientData(chat?.users, user)
     return (
         <Container>
             <Head>

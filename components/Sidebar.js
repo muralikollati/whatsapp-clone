@@ -4,21 +4,38 @@ import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import { Modal } from './Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import ChatList from './ChatList';
+import { useRouter } from 'next/router'
 
-function Sidebar() {
-    const [showModal, setShowModal] = useState(false);
+function  Sidebar  ()  {
     const [ loggedInUser ] = useAuthState(auth)
-    const userChatRef = db.collection('chats').where('users', 'array-contains', loggedInUser?.email)
-    const [chatsSnapshot] = useCollection(userChatRef)
+    const [showModal, setShowModal] = useState(false);
+    const [chatRef, setChatRef] = useState("");
+    const router = useRouter()
+
+   useEffect(() => {
+       console.log(loggedInUser.email);
+        if(loggedInUser.email){
+            console.log(db.collection('chats').where('users', 'array-contains', loggedInUser?.email));
+            setChatRef(db.collection('chats').where('users', 'array-contains', loggedInUser?.email))
+        }
+   },[loggedInUser])
+   
+ console.log(chatRef);
+  const [chatsSnapshot] = useCollection(chatRef)
+  //console.log("chatRef::",chatsSnapshot);
 
   const openModal = () => {
     setShowModal(prev => !prev);
   };
+  const signOutHandler = () =>{
+     auth.signOut()
+     router.push('/')
+  }
     return (
         <Container>
             <Modal showModal={showModal} 
@@ -27,7 +44,7 @@ function Sidebar() {
                    />
             <Header>
               <UserAvatar src={loggedInUser.photoURL} 
-              onClick={()=> auth.signOut()}/>
+              onClick={signOutHandler}/>
                 <IconContainer>
                     <Icon_Button>
                         <Chat_Icon />
@@ -44,11 +61,6 @@ function Sidebar() {
             <ChatButton onClick={openModal}>start a new chat</ChatButton>
 
             {/* List of Chats */}
-            {/* <Chats /> */}
-            
-
-            
-
             {
             chatsSnapshot?.docs.map(chat =>(
                       <ChatList key={chat.id} 

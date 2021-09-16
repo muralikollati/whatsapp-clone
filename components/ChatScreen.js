@@ -41,7 +41,7 @@ function ChatScreen({recipientData, recipientEmail, messages}) {
         }else{
             return JSON.parse(messages).map(message =>(
                 <Message key={message.id}
-                         user={message}
+                         user={message.user}
                          message = {message}
                          />
             ))

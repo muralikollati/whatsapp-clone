@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import '../styles/globals.css'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth, db } from '../firebase'
